@@ -1,7 +1,15 @@
 const express = require('express');
+const exphbs = require('express-handlebars');
+
 const app = express();
 
-//How Middleware works
+//HAndlebars Middleware
+app.engine('handlebars', exphbs({
+    defaultLayout:'main'
+}));
+app.set('view engine', 'handlebars');
+
+//How DEFAULT Middleware works
 /*app.use(function(req, res, next){
     console.log(Date.now());
     req.name ='Luca';
@@ -11,13 +19,15 @@ const app = express();
 
 //Index Routing
 app.get('/', (req, res) =>{
-    //console.log(req.name);
-    res.send('index');
+    const title = 'Welcome to the Page';
+    res.render('index', {
+        title : title
+    });
 });
 
 //About Routing
 app.get('/about', (req, res) =>{
-    res.send('about');
+    res.render('about');
 });
 
 
