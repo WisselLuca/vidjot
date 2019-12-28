@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 
 const Schema = mongoose.Schema;
 
-//Create SChema
+//Create Schema
 const IdeaSchema = new Schema({
     title:{
         type: String,
