@@ -1,7 +1,9 @@
 const express = require('express');
 const exphbs = require('express-handlebars');
 const methodOverride = require('method-override');
-const bodyParser = require('body-parser')
+const flash = require('connect-flash');
+const session = require('express-session');
+const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
 
 const app = express();
@@ -30,17 +32,29 @@ app.set('view engine', 'handlebars');
 //Method Override Middlware to use a put or delete in forms
 app.use(methodOverride('_method'));
 
+//Session Middleware
+app.set('trust proxy', 1); // trust first proxy
+app.use(session({
+    secret: 'secret',
+    resave: true,
+    saveUninitialized: true
+}));
+
+//middleware for flash
+app.use(flash());
+
 //Body Parser middleware
 app.use(bodyParser.urlencoded({ extended: false }))
 app.use(bodyParser.json());
 
-//How DEFAULT Middleware works
-/*app.use(function(req, res, next){
-    console.log(Date.now());
-    req.name ='Luca';
+
+//Global Variables
+app.use(function (req, res, next){
+    res.locals.success_msg = req.flash('success_msg');
+    res.locals.error_msg = req.flash('error_msg');
+    res.locals.error = req.flash('error');
     next();
-})
-*/
+});
 
 //Index Routing
 app.get('/', (req, res) =>{
@@ -105,6 +119,7 @@ let errors = [];
         new Idea(newUser)
             .save()
             .then(idea =>{
+                req.flash('success_msg', 'The idea has been added');
                 res.redirect('/ideas');
             });
     }
@@ -122,6 +137,7 @@ app.put('/ideas/:id', (req, res)=>{
 
             idea.save()
                 .then(idea => {
+                    req.flash('success_msg', 'The idea has been edited');
                     res.redirect('/ideas')
                     })
         });
@@ -131,10 +147,10 @@ app.put('/ideas/:id', (req, res)=>{
 app.delete('/ideas/:id', (req, res)=>{
     Idea.remove({_id: req.params.id})
         .then(() =>{
+            req.flash('success_msg', 'The idea has been removed');
             res.redirect('/ideas')
         });
 });
-
 
 const port = 5000;
 
