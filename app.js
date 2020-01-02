@@ -1,4 +1,5 @@
 const express = require('express');
+const path =require('path');
 const exphbs = require('express-handlebars');
 const methodOverride = require('method-override');
 const flash = require('connect-flash');
@@ -45,6 +46,9 @@ app.use(flash());
 //Body Parser middleware
 app.use(bodyParser.urlencoded({ extended: false }))
 app.use(bodyParser.json());
+
+//middleware for path
+app.use(express.static(path.join(__dirname, 'public')));
 
 
 //Global Variables

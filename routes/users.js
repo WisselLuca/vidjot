@@ -8,12 +8,12 @@ const mongoose = require('mongoose');
 
 //User login Routes
 router.get('/login', (req, res)=>{
-    res.send('login');
+    res.render('users/login');
 });
 
 //User login Routes
 router.get('/register', (req, res)=>{
-    res.send('register');
+    res.render('users/register');
 });
 
 
