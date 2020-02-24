@@ -1,12 +1,14 @@
 const express = require('express');
 const router = express.Router();
 const mongoose = require('mongoose');
+const {ensureAuthenticated} = require('../helper/auth');
+//Load helper
 
 //Load Idea Model
 require('../models/Ideas');
 const Idea = mongoose.model('ideas');
 
-router.get('/', (req, res)=>{
+router.get('/', ensureAuthenticated,  (req, res)=>{
     Idea.find({})
         .sort({date: 'desc'})
         .then(ideas =>{
@@ -17,12 +19,12 @@ router.get('/', (req, res)=>{
 });
 
 //Add Idea Form
-router.get('/add', (req, res) =>{
+router.get('/add', ensureAuthenticated, (req, res) =>{
     res.render('ideas/add');
 });
 
 //Edit Idea Form
-router.get('/edit/:id', (req, res) =>{
+router.get('/edit/:id', ensureAuthenticated, (req, res) =>{
     Idea.findOne({
         _id: req.params.id
     })
@@ -33,7 +35,7 @@ router.get('/edit/:id', (req, res) =>{
         });
 });
 
-router.post('/', (req, res) =>{
+router.post('/', ensureAuthenticated, (req, res) =>{
     let errors = [];
     if(!req.body.title){
         errors.push({text: 'Please add a title!'});
@@ -62,7 +64,7 @@ router.post('/', (req, res) =>{
 });
 
 //Edit Form process
-router.put('/:id', (req, res)=>{
+router.put('/:id', ensureAuthenticated,  (req, res)=>{
     Idea.findOne({
         _id: req.params.id
     })
